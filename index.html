@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Classroom Tug-of-War</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -10,7 +13,9 @@
   --bg1:#4f46e5;--bg2:#9333ea;
   --card:#ffffff;--ink:#1b1740;--muted:#5b5b80;--line:#e3e0f5;--field:#f4f2ff;--btn:#ffffff;
   --a:#ef4444;--a2:#b91c1c;--b:#3b82f6;--b2:#1d4ed8;--gold:#fbbf24;
+  --vh:1vh;
 }
+@supports (height:1dvh){:root{--vh:1dvh}}
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg1:#171340;--bg2:#2a1258;
@@ -25,14 +30,18 @@
 html,body{margin:0}
 body{
   font-family:"Fredoka","Trebuchet MS","Arial Rounded MT Bold",Arial,sans-serif;
-  color:#fff;min-height:100vh;
+  color:#fff;min-height:calc(100*var(--vh));
   background:var(--bg1);
   background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed;
 }
 button,input,textarea{font:inherit}
 button{cursor:pointer}
 .hidden{display:none!important}
-.app{max-width:1200px;margin:0 auto;padding:16px 18px 40px}
+.app{max-width:1200px;margin:0 auto;padding:16px max(18px,env(safe-area-inset-right)) max(40px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
+html{-webkit-text-size-adjust:100%}
+button,.ans,.chip,.btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+body.ingame{overscroll-behavior-y:contain}
+body.ingame .pad,body.ingame .qcard,body.ingame .arena{-webkit-user-select:none;user-select:none}
 
 /* ---------- header ---------- */
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
@@ -219,38 +228,100 @@ canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
 @media (min-width:821px){
   body.ingame .app{padding:8px 16px}
   body.ingame .top{margin-bottom:8px}
-  body.ingame .brand h1{font-size:clamp(22px,4vh,34px)}
+  body.ingame .brand h1{font-size:clamp(22px,calc(4*var(--vh)),34px)}
   body.ingame .badge{display:none}
   body.ingame .chip{padding:4px 12px;font-size:14px}
   body.ingame .scoreboard{margin-bottom:8px}
   body.ingame .tcard{padding:4px 18px}
-  body.ingame .tscore{font-size:clamp(28px,5.5vh,48px)}
-  body.ingame .arena{--kid:clamp(80px,16vh,150px);--ground:clamp(44px,8vh,64px);height:calc(var(--kid) + clamp(110px,20vh,185px));margin-bottom:8px}
+  body.ingame .tscore{font-size:clamp(28px,calc(5.5*var(--vh)),48px)}
+  body.ingame .arena{--kid:clamp(80px,calc(16*var(--vh)),150px);--ground:clamp(44px,calc(8*var(--vh)),64px);height:calc(var(--kid) + clamp(110px,calc(20*var(--vh)),185px));margin-bottom:8px}
   body.ingame .qcard{padding:8px 20px 6px;margin-bottom:8px}
-  body.ingame .qtext{font-size:clamp(22px,min(4.6vw,5.2vh),56px);margin:2px auto}
-  body.ingame .status{min-height:1.3em;font-size:clamp(15px,2.6vh,22px)}
+  body.ingame .qtext{font-size:clamp(22px,min(4.6vw,calc(5.2*var(--vh))),56px);margin:2px auto}
+  body.ingame .status{min-height:1.3em;font-size:clamp(15px,calc(2.6*var(--vh)),22px)}
   body.ingame .pad{padding:8px}
-  body.ingame .padhead{margin-bottom:6px;font-size:clamp(16px,2.8vh,24px)}
+  body.ingame .padhead{margin-bottom:6px;font-size:clamp(16px,calc(2.8*var(--vh)),24px)}
   body.ingame .padgrid{gap:8px}
-  body.ingame .ans{min-height:clamp(46px,8.5vh,68px);font-size:clamp(16px,min(2.4vw,3.6vh),30px);padding:6px 10px}
-  body.ingame .play{grid-template-columns:1fr clamp(90px,14vh,124px) 1fr}
-  body.ingame .timerbox{width:clamp(80px,13vh,118px);height:clamp(80px,13vh,118px)}
-  body.ingame .tnum{font-size:clamp(28px,5vh,44px)}
+  body.ingame .ans{min-height:clamp(46px,calc(8.5*var(--vh)),68px);font-size:clamp(16px,min(2.4vw,calc(3.6*var(--vh))),30px);padding:6px 10px}
+  body.ingame .play{grid-template-columns:1fr clamp(90px,calc(14*var(--vh)),124px) 1fr}
+  body.ingame .timerbox{width:clamp(80px,calc(13*var(--vh)),118px);height:clamp(80px,calc(13*var(--vh)),118px)}
+  body.ingame .tnum{font-size:clamp(28px,calc(5*var(--vh)),44px)}
 }
 @media (max-width:820px){
   .settings{grid-template-columns:1fr}
   .how{grid-template-columns:1fr}
-  .scoreboard{grid-template-columns:1fr 1fr}
+  .logo{width:48px;height:48px;padding:4px}
+  .brand h1{font-size:clamp(22px,6vw,34px)}
+  .scoreboard{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+  .tcard{padding:4px 14px}
+  .tscore{font-size:clamp(26px,7vw,40px)}
   .meterwrap{grid-column:1/-1;order:3}
-  .play{grid-template-columns:1fr;gap:12px}
-  .timerbox{order:-1}
+  .mlabel{font-size:14px;margin-top:0}
+  .arena{--kid:clamp(66px,min(19vw,calc(10.5*var(--vh))),130px);--ground:clamp(40px,calc(6.5*var(--vh)),56px);height:calc(var(--kid) + clamp(100px,calc(17*var(--vh)),170px));margin-bottom:8px}
   .team.a{left:9%}.team.b{right:9%}
-  .kid:nth-child(3){display:none}
-  .arena{height:calc(var(--kid) + 150px)}
+  .qcard{padding:8px 14px 6px;margin-bottom:8px;border-radius:20px}
+  .qtext{font-size:clamp(20px,5.2vw,34px);margin:2px auto}
+  .status{min-height:1.3em;font-size:clamp(14px,3.4vw,19px)}
+  .play{grid-template-columns:1fr;gap:8px}
+  .pad{padding:8px;border-radius:20px}
+  .padhead{margin-bottom:6px;font-size:clamp(16px,4vw,20px)}
+  .padgrid{gap:8px}
+  .ans{min-height:clamp(46px,calc(7*var(--vh)),60px);padding:6px 10px;font-size:clamp(16px,4.2vw,24px)}
+  .timerbox{width:64px;height:64px}
+  .tnum{font-size:26px}
 }
-@media (max-width:480px){
-  .padgrid{grid-template-columns:1fr}
-  .ans{min-height:56px}
+@media (max-width:560px){
+  .kid:nth-child(3){display:none}
+  .card{padding:16px;border-radius:20px}
+  .tname{font-size:clamp(16px,4.4vw,22px)}
+}
+@media (max-width:820px){
+  body.ingame .badge{display:none}
+  body.ingame .top{margin-bottom:6px;gap:8px}
+  body.ingame .app{padding-top:8px;padding-bottom:12px}
+  body.ingame .chip{padding:4px 12px;font-size:14px}
+}
+/* tablets held upright: answer pads sit side by side */
+@media (min-width:600px) and (max-width:820px){
+  .play{grid-template-columns:1fr 72px 1fr}
+  .ans{font-size:clamp(15px,2.6vw,22px)}
+}
+/* phones held upright: save every bit of height */
+@media (max-width:599px){
+  #fsBtn{display:none}
+  body.ingame .brand h1{display:none}
+  body.ingame .qnum,body.ingame .mlabel{display:none}
+  body.ingame .arena{height:calc(var(--kid) + clamp(84px,calc(13*var(--vh)),170px))}
+  body.ingame .ans{min-height:clamp(42px,calc(6.2*var(--vh)),60px)}
+  body.ingame .timerbox{width:52px;height:52px}
+  body.ingame .tnum{font-size:22px}
+}
+/* phones held sideways: squeeze everything into a short screen */
+@media (orientation:landscape) and (max-height:520px){
+  body.ingame .app{padding:6px 12px}
+  body.ingame .logo{width:34px;height:34px;padding:2px;border-width:2px}
+  body.ingame .brand h1,body.ingame .badge{display:none}
+  body.ingame .chip{padding:3px 10px;font-size:13px}
+  body.ingame .top{margin-bottom:4px}
+  body.ingame .scoreboard{grid-template-columns:1fr 1.5fr 1fr;gap:8px;margin-bottom:4px}
+  body.ingame .meterwrap{grid-column:auto;order:0}
+  body.ingame .mlabel{display:none}
+  body.ingame .tcard{padding:2px 12px;border-width:3px;border-radius:14px}
+  body.ingame .tname{font-size:15px}
+  body.ingame .tscore{font-size:24px}
+  body.ingame .arena{--kid:clamp(48px,calc(13*var(--vh)),80px);--ground:28px;height:calc(var(--kid) + 62px);margin-bottom:4px;border-width:3px;border-radius:18px}
+  body.ingame .sun,body.ingame .cloud{display:none}
+  body.ingame .qcard{padding:4px 12px 2px;margin-bottom:4px;border-radius:16px}
+  body.ingame .qnum{display:none}
+  body.ingame .qtext{font-size:clamp(16px,calc(5.2*var(--vh)),26px);margin:0 auto}
+  body.ingame .status{font-size:13px;min-height:1.2em}
+  body.ingame .play{grid-template-columns:1fr 56px 1fr;gap:8px}
+  body.ingame .timerbox{width:52px;height:52px}
+  body.ingame .tnum{font-size:20px}
+  body.ingame .pad{padding:5px;border-width:3px;border-radius:16px}
+  body.ingame .padhead{margin-bottom:3px;font-size:14px}
+  body.ingame .padgrid{gap:5px}
+  body.ingame .ans{min-height:36px;font-size:clamp(14px,calc(4.4*var(--vh)),20px);padding:3px 8px;border-radius:10px}
+  body.ingame .key{min-width:22px;height:22px;font-size:12px}
 }
 @media (prefers-reduced-motion: reduce){
   .kid,.cloud,.flag:after,.pit i,.trophy{animation:none!important}
@@ -375,6 +446,7 @@ const SHIRTS = [['#ef4444','#dc2626','#f87171'], ['#3b82f6','#2563eb','#60a5fa']
 const BANDS  = ['#fde047','#ffffff'];
 const MAXSHIFT = 11;               // % of arena width the rope group can travel
 const RING = 2 * Math.PI * 52;
+const TOUCH = !!(window.matchMedia && matchMedia('(pointer:coarse)').matches);
 const STORE = 'tugwar.showdown.v1';
 const SAMPLE = [
 "What is 7 × 8? | 56 | 48 | 54 | 64",
@@ -655,7 +727,7 @@ function nextQuestion(){
   $('qnum').textContent = 'Question ' + qCount; $('qtext').textContent = cur.q;
   status('Be fast! The first correct answer pulls the rope.');
   [0,1].forEach(t => buildPad(t));
-  $('padStA').textContent = 'Keys A S D F'; $('padStB').textContent = 'Keys J K L ;';
+  $('padStA').textContent = TOUCH ? '' : 'Keys A S D F'; $('padStB').textContent = TOUCH ? '' : 'Keys J K L ;';
   sfx.ding(); startTimer();
 }
 function buildPad(t){
@@ -663,9 +735,9 @@ function buildPad(t){
   $(t===0?'padA':'padB').classList.remove('locked');
   order.forEach((opt,i) => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'ans';
-    const k = document.createElement('span'); k.className = 'key'; k.textContent = KEYS[t][i].toUpperCase();
     const s = document.createElement('span'); s.className = 'atext'; s.textContent = opt;
-    b.append(k, s); b.addEventListener('click', () => pick(t,i)); grid.appendChild(b);
+    if(!TOUCH){ const k = document.createElement('span'); k.className = 'key'; k.textContent = KEYS[t][i].toUpperCase(); b.append(k); }
+    b.append(s); b.addEventListener('click', () => pick(t,i)); grid.appendChild(b);
   });
 }
 function btns(t){ return $(t===0?'gridA':'gridB').querySelectorAll('.ans'); }
@@ -786,6 +858,7 @@ document.addEventListener('keydown', e => {
 });
 
 /* ================= init ================= */
+if(!document.documentElement.requestFullscreen && !document.documentElement.webkitRequestFullscreen) $('fsBtn').classList.add('hidden');
 buildTeams(); loadSaved();
 })();
 </script>
