@@ -1162,13 +1162,16 @@ async function loadLeaderboard(){
   if(!dbReady || !db){ status.textContent = 'Leaderboard unavailable right now.'; status.classList.add('off'); return; }
   status.textContent = 'Loading…';
   try{
-    const q = fs.query(fs.collection(db,'scores'), fs.where('setId','==',curSet.id), fs.orderBy('score','desc'), fs.limit(20));
+    /* No orderBy here on purpose: filtering + sorting in Firestore needs a custom index. We fetch this topic's scores and sort them below instead. */
+    const q = fs.query(fs.collection(db,'scores'), fs.where('setId','==',curSet.id), fs.limit(500));
     const snap = await fs.getDocs(q);
     status.textContent = '';
     if(snap.empty){ list.innerHTML = '<div class="lbmsg">No scores yet for this topic — you could be first!</div>'; return; }
     let rank = 0;
-    snap.forEach(doc => {
-      rank++; const d = doc.data();
+    const rows = []; snap.forEach(doc => rows.push(doc.data()));
+    rows.sort((a,b) => (b.score||0) - (a.score||0));
+    rows.slice(0,20).forEach(d => {
+      rank++;
       const row = document.createElement('div'); row.className = 'lbrow' + (d.name===nickname && d.score===score ? ' me' : '');
       row.innerHTML = `<span class="pos">${rank<=3 ? ['🥇','🥈','🥉'][rank-1] : rank}</span><span class="nm"></span><span class="sc"></span>`;
       row.querySelector('.nm').textContent = d.name || 'Anonymous';
@@ -1177,7 +1180,8 @@ async function loadLeaderboard(){
     });
   }catch(e){
     console.error('loadLeaderboard failed', e);
-    status.textContent = 'Could not load the leaderboard (check your connection).'; status.classList.add('off');
+    const code = (e && e.code) ? String(e.code).replace('firestore/','') : 'unknown';
+    status.textContent = 'Could not load the leaderboard (' + code + ').' + (code==='unavailable' ? ' Check your connection.' : ''); status.classList.add('off');
   }
 }
 
