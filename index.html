@@ -9,6 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Exam Practice">
 <title>P6 Term 1 Exam Practice by T.Jonny</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -59,7 +61,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manip
 .btn{border:0;border-radius:14px;padding:13px 18px;font-weight:600;font-size:17px;background:#e7e4fb;color:#1b1740;box-shadow:0 4px 0 rgba(0,0,0,.25);width:100%;transition:transform .08s}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
 .btn.gold{background:var(--gold);color:#3b2400;font-size:18px}
-.btn.ghost{background:var(--field);box-shadow:none;border:2px solid var(--line);color:var(--ink)}
+.btn.ghost{background:var(--field);box-shadow:none;border:2px solid var(--line)}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 input[type=text]{width:100%;border:2px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--field);color:var(--ink)}
 input:focus{outline:3px solid var(--gold);outline-offset:1px}
@@ -159,16 +161,6 @@ h2{margin:0 0 4px;font-size:19px}
 .lbmsg{color:var(--muted);font-size:14px;text-align:center;padding:14px 0}
 .actionsrow{display:grid;gap:8px;margin-top:10px}
 
-/* ---------- exam info button & view ---------- */
-.examBtnRow{display:flex;justify-content:center;margin-bottom:10px}
-.btn.small{width:auto;padding:8px 14px;font-size:12.5px;font-weight:600;box-shadow:0 3px 0 rgba(0,0,0,.25)}
-.examlist{display:grid;gap:10px}
-.examcard{background:var(--field);border:2px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
-.examcard .swatch{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;color:#fff}
-.examcard .meta{flex:1;min-width:0}
-.examcard .meta b{display:block;font-size:16px;margin-bottom:4px}
-.examcard .meta ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--muted);line-height:1.55}
-
 canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
 @media (prefers-reduced-motion: reduce){.cdnum.pop,.boostreveal.show,.egg.shake,.pop{animation:none!important}}
 
@@ -235,8 +227,6 @@ window.FACES=[{"name":"Ai","src":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQA
   </div>
 </header>
 
-<div class="examBtnRow"><button class="btn ghost small" id="examInfoBtn" type="button">📋 What's in my Term 1 exams?</button></div>
-
 <!-- ============ HOME ============ -->
 <section id="home">
   <div class="card">
@@ -266,16 +256,6 @@ window.FACES=[{"name":"Ai","src":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQA
     <div class="netstatus" id="bdstatus"></div>
   </div>
   <div class="actionsrow"><button class="btn gold" id="bdBack" type="button">Back</button></div>
-</section>
-
-<!-- ============ EXAM INFO ============ -->
-<section id="examinfo" class="hidden">
-  <div class="card">
-    <h2>📋 What's in my Term 1 exams?</h2>
-    <p class="sub">Here's what each subject covers this term.</p>
-    <div class="examlist" id="examlist"></div>
-  </div>
-  <div class="actionsrow"><button class="btn gold" id="examBack" type="button">Back</button></div>
 </section>
 
 <!-- ============ GAME ============ -->
@@ -939,14 +919,6 @@ const SUBJECTS = [
   {id:'extra',   name:'Extra'}
 ];
 
-const EXAM_INFO = [
-  {subject:'English',                icon:'📖', color:'#0ea5e9', items:['Oxford Family and Friends — Chapters 1–6']},
-  {subject:'English Communication',  icon:'🗣️', color:'#06b6d4', items:['ONET-style questions']},
-  {subject:'Maths',                  icon:'🔢', color:'#6366f1', items:['U1 Factors','U2 Fractions','U3 Decimals','U4 Percentage','U5 Ratio']},
-  {subject:'Science',                icon:'🔬', color:'#22c55e', items:['U1 Food and Nutrition','U2 Separation Techniques','U6 Rocks','U7 Wind and Monsoons']},
-  {subject:'Health',                 icon:'❤️', color:'#f43f5e', items:['U1 My Body','U2 Relationships','U3 Risky Behaviours']}
-];
-
 /* ================= parsing ================= */
 function parseSet(text){
   const list = [];
@@ -969,7 +941,7 @@ const BASE_MAX = 1000, BASE_MIN = 100;
 let nickname = '', muted = false;
 let curSet = null, deck = [], qi = 0, cur = null, order = [];
 let score = 0, streak = 0, bestStreakRun = 0, correctCount = 0, lastEggAt = 0;
-let boostMult = {left:0, factor:1};
+let boostMult = {left:0, factor:1}, boostTime = {left:0, add:0};
 let state = 'home', t0 = 0, rafId = 0, lastSec = -1, token = 0;
 
 function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
@@ -1054,19 +1026,6 @@ function updateNetStatus(el){
   el.textContent = navigator.onLine === false ? 'You look offline — you can still play, scores sync when you reconnect.' : '';
   el.classList.toggle('off', navigator.onLine === false);
 }
-function buildExamInfo(){
-  const box = $('examlist');
-  if(box.dataset.built) return;
-  box.innerHTML = '';
-  EXAM_INFO.forEach(s => {
-    const row = document.createElement('div'); row.className = 'examcard';
-    const items = s.items.map(i => `<li>${i}</li>`).join('');
-    row.innerHTML = `<div class="swatch" style="background:${s.color}">${s.icon}</div>
-      <div class="meta"><b>${s.subject}</b><ul>${items}</ul></div>`;
-    box.appendChild(row);
-  });
-  box.dataset.built = '1';
-}
 
 /* ================= run flow ================= */
 function showView(v){
@@ -1074,7 +1033,6 @@ function showView(v){
   $('game').classList.toggle('hidden', v!=='game');
   $('results').classList.toggle('hidden', v!=='results');
   $('boards').classList.toggle('hidden', v!=='boards');
-  $('examinfo').classList.toggle('hidden', v!=='examinfo');
 }
 function startRun(set){
   if(!nickname){ $('nickname').focus(); $('nickname').scrollIntoView({behavior:'smooth', block:'center'}); return; }
@@ -1082,7 +1040,7 @@ function startRun(set){
   token++; const my = token; cancelAnimationFrame(rafId);
   curSet = set; deck = shuffle(set.list).slice(0, Math.min(RUN_LEN, set.list.length)); qi = 0;
   score = 0; streak = 0; bestStreakRun = 0; correctCount = 0; lastEggAt = 0;
-  boostMult = {left:0, factor:1};
+  boostMult = {left:0, factor:1}; boostTime = {left:0, add:0};
   buildProgress(); renderScore(); renderStreak(); $('qimg').classList.add('hidden');
   $('eggwrap').classList.add('hidden'); $('answers').classList.remove('hidden'); $('qtext').closest('.qcard') && ($('qtext').parentElement.classList.remove('hidden'));
   showView('game'); ac();
@@ -1133,7 +1091,7 @@ function nextQuestion(){
   });
   startTimer();
 }
-function effectiveTime(){ return TIME_MS; }
+function effectiveTime(){ return TIME_MS + (boostTime.left>0 ? boostTime.add : 0); }
 function startTimer(){
   cancelAnimationFrame(rafId); t0 = performance.now(); lastSec = -1;
   const ring = $('ringfg'), num = $('tnum'), box = $('timerbox'); const total = effectiveTime();
@@ -1184,9 +1142,10 @@ function answer(i){
     popText(chosen===null ? "Time's up" : 'Not quite', true);
   }
   if(boostMult.left>0) boostMult.left--;
+  if(boostTime.left>0) boostTime.left--;
   renderStreak();
 
-  const eggMilestone = streak>0 && streak%2===0 && streak>lastEggAt;
+  const eggMilestone = streak>0 && streak%4===0 && streak>lastEggAt;
   later(() => {
     if(eggMilestone){ lastEggAt = streak; showEgg(); }
     else nextQuestion();
@@ -1195,11 +1154,9 @@ function answer(i){
 
 /* ---- bonus egg ---- */
 const BOOSTS = [
-  {type:'points', label:t=>'🎁 +'+t.value+' bonus points!',       roll:()=>200+Math.floor(Math.random()*401)},   // 200–600
-  {type:'points', label:t=>'💰 JACKPOT! +'+t.value+' points!!',    roll:()=>1000+Math.floor(Math.random()*1001)}, // 1000–2000
+  {type:'points', label:t=>'🎁 +'+t.value+' bonus points!', value:400},
   {type:'mult',   label:t=>'⚡ 2× points for the next 3 questions!', value:2, dur:3},
-  {type:'mult',   label:t=>'🔥 3× points for the next 2 questions!', value:3, dur:2},
-  {type:'mult',   label:t=>'🌟 5× points on your very next question!', value:5, dur:1}
+  {type:'time',   label:t=>'⏱ +4 seconds for the next 3 questions!', value:4000, dur:3}
 ];
 function showEgg(){
   state = 'egg';
@@ -1225,8 +1182,9 @@ function crackEgg(btn){
   btn.classList.add('shake'); sfx.crack();
   later(() => {
     const boost = BOOSTS[Math.floor(Math.random()*BOOSTS.length)];
-    if(boost.type==='points'){ boost.value = boost.roll(); score += boost.value; renderScore(); }
-    else if(boost.type==='mult'){ boostMult = {left:boost.dur, factor:boost.value}; }
+    if(boost.type==='points') score += boost.value, renderScore();
+    else if(boost.type==='mult') boostMult = {left:boost.dur, factor:boost.value};
+    else if(boost.type==='time') boostTime = {left:boost.dur, add:boost.value};
     const rv = $('boostreveal'); rv.textContent = boost.label(boost); rv.classList.add('show');
     sfx.boost(); burst(innerWidth/2, innerHeight*0.4, 40, {speed:9});
     $('eggContinueRow').classList.remove('hidden');
@@ -1314,8 +1272,6 @@ $('viewBoards').addEventListener('click', openBoards);
 $('boardTopic').addEventListener('change', loadBoardView);
 $('bdRefresh').addEventListener('click', loadBoardView);
 $('bdBack').addEventListener('click', () => { showView('home'); buildSetList(); });
-$('examInfoBtn').addEventListener('click', () => { buildExamInfo(); showView('examinfo'); });
-$('examBack').addEventListener('click', () => { showView('home'); buildSetList(); });
 $('muteBtn').addEventListener('click', () => { muted=!muted; setMuteLabel(); const s=store.get()||{}; s.muted=muted; store.set(s); if(!muted){ ac(); sfx.beep(); } });
 $('fsBtn').addEventListener('click', () => { try{ if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(()=>{}); }catch(e){} });
 addEventListener('online', () => updateNetStatus($('netstatus')));
