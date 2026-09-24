@@ -59,7 +59,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manip
 .btn{border:0;border-radius:14px;padding:13px 18px;font-weight:600;font-size:17px;background:#e7e4fb;color:#1b1740;box-shadow:0 4px 0 rgba(0,0,0,.25);width:100%;transition:transform .08s}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
 .btn.gold{background:var(--gold);color:#3b2400;font-size:18px}
-.btn.ghost{background:var(--field);box-shadow:none;border:2px solid var(--line)}
+.btn.ghost{background:var(--field);box-shadow:none;border:2px solid var(--line);color:var(--ink)}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 input[type=text]{width:100%;border:2px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--field);color:var(--ink)}
 input:focus{outline:3px solid var(--gold);outline-offset:1px}
@@ -969,7 +969,7 @@ const BASE_MAX = 1000, BASE_MIN = 100;
 let nickname = '', muted = false;
 let curSet = null, deck = [], qi = 0, cur = null, order = [];
 let score = 0, streak = 0, bestStreakRun = 0, correctCount = 0, lastEggAt = 0;
-let boostMult = {left:0, factor:1}, boostTime = {left:0, add:0};
+let boostMult = {left:0, factor:1};
 let state = 'home', t0 = 0, rafId = 0, lastSec = -1, token = 0;
 
 function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
@@ -1082,7 +1082,7 @@ function startRun(set){
   token++; const my = token; cancelAnimationFrame(rafId);
   curSet = set; deck = shuffle(set.list).slice(0, Math.min(RUN_LEN, set.list.length)); qi = 0;
   score = 0; streak = 0; bestStreakRun = 0; correctCount = 0; lastEggAt = 0;
-  boostMult = {left:0, factor:1}; boostTime = {left:0, add:0};
+  boostMult = {left:0, factor:1};
   buildProgress(); renderScore(); renderStreak(); $('qimg').classList.add('hidden');
   $('eggwrap').classList.add('hidden'); $('answers').classList.remove('hidden'); $('qtext').closest('.qcard') && ($('qtext').parentElement.classList.remove('hidden'));
   showView('game'); ac();
@@ -1133,7 +1133,7 @@ function nextQuestion(){
   });
   startTimer();
 }
-function effectiveTime(){ return TIME_MS + (boostTime.left>0 ? boostTime.add : 0); }
+function effectiveTime(){ return TIME_MS; }
 function startTimer(){
   cancelAnimationFrame(rafId); t0 = performance.now(); lastSec = -1;
   const ring = $('ringfg'), num = $('tnum'), box = $('timerbox'); const total = effectiveTime();
@@ -1184,10 +1184,9 @@ function answer(i){
     popText(chosen===null ? "Time's up" : 'Not quite', true);
   }
   if(boostMult.left>0) boostMult.left--;
-  if(boostTime.left>0) boostTime.left--;
   renderStreak();
 
-  const eggMilestone = streak>0 && streak%4===0 && streak>lastEggAt;
+  const eggMilestone = streak>0 && streak%2===0 && streak>lastEggAt;
   later(() => {
     if(eggMilestone){ lastEggAt = streak; showEgg(); }
     else nextQuestion();
@@ -1196,9 +1195,11 @@ function answer(i){
 
 /* ---- bonus egg ---- */
 const BOOSTS = [
-  {type:'points', label:t=>'🎁 +'+t.value+' bonus points!', value:400},
+  {type:'points', label:t=>'🎁 +'+t.value+' bonus points!',       roll:()=>200+Math.floor(Math.random()*401)},   // 200–600
+  {type:'points', label:t=>'💰 JACKPOT! +'+t.value+' points!!',    roll:()=>1000+Math.floor(Math.random()*1001)}, // 1000–2000
   {type:'mult',   label:t=>'⚡ 2× points for the next 3 questions!', value:2, dur:3},
-  {type:'time',   label:t=>'⏱ +4 seconds for the next 3 questions!', value:4000, dur:3}
+  {type:'mult',   label:t=>'🔥 3× points for the next 2 questions!', value:3, dur:2},
+  {type:'mult',   label:t=>'🌟 5× points on your very next question!', value:5, dur:1}
 ];
 function showEgg(){
   state = 'egg';
@@ -1224,9 +1225,8 @@ function crackEgg(btn){
   btn.classList.add('shake'); sfx.crack();
   later(() => {
     const boost = BOOSTS[Math.floor(Math.random()*BOOSTS.length)];
-    if(boost.type==='points') score += boost.value, renderScore();
-    else if(boost.type==='mult') boostMult = {left:boost.dur, factor:boost.value};
-    else if(boost.type==='time') boostTime = {left:boost.dur, add:boost.value};
+    if(boost.type==='points'){ boost.value = boost.roll(); score += boost.value; renderScore(); }
+    else if(boost.type==='mult'){ boostMult = {left:boost.dur, factor:boost.value}; }
     const rv = $('boostreveal'); rv.textContent = boost.label(boost); rv.classList.add('show');
     sfx.boost(); burst(innerWidth/2, innerHeight*0.4, 40, {speed:9});
     $('eggContinueRow').classList.remove('hidden');
