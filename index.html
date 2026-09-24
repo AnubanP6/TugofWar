@@ -72,6 +72,8 @@ label{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color:var(-
 h2{margin:0 0 4px;font-size:19px}
 .sub{color:var(--muted);font-size:14px;margin:0 0 12px;line-height:1.4}
 .setlist{display:grid;gap:10px}
+.subjhead{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:10px 0 -2px;padding-left:2px}
+.subjhead:first-child{margin-top:0}
 .setcard{background:var(--field);border:2px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px}
 .setcard .swatch{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;color:#fff}
 .setcard .meta{flex:1;min-width:0}
@@ -230,7 +232,6 @@ window.FACES=[{"name":"Ai","src":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQA
     <p class="sub">This is what shows up on the leaderboard.</p>
     <div class="namecard">
       <div class="field"><input type="text" id="nickname" maxlength="20" placeholder="Type your name"></div>
-      <button class="btn ghost" id="saveName" type="button" style="width:auto">Save</button>
     </div>
   </div>
 
@@ -857,17 +858,63 @@ Fossils are used as a guide to determine what? | The ages of rocks | The price o
 Fossils help us to understand what? | The evolution of life on Earth | How to make plaster | How to forecast the weather | How magma cools
 `;
 
+const NUTRITION = `
+# Food and nutrition
+How many types of nutrients are there? | 6 | 4 | 5 | 8
+Which nutrient is the body's main source of energy? | Carbohydrates | Proteins | Vitamins | Minerals
+Which nutrients are needed for growth and repair? | Proteins | Fats | Water | Fiber
+Which type of carbohydrate helps food move through the stomach and intestines? | Fiber | Protein | Fat | Vitamin
+What does the layer of fats under our skin do? | Keeps us warm | Digests our food | Kills bacteria | Carries nutrients to cells
+Which is a job of water in the body? | Transports nutrients to cells | Digests starch into sugar | Produces bile | Kills bacteria in food
+Which food contains only carbohydrates? | Candies | Apples | Milk | Eggs
+Where can we find the nutrients in packed or canned food? | Nutrition facts | Price tag | Expiry date | Barcode
+# Food additives
+What are food additives? | Substances added to food to improve its taste, texture or appearance | Substances the body makes to digest food | The six types of nutrients | Foods that contain only water
+Which of these is a type of food additive? | Preservatives | Enzymes | Fiber | Minerals
+# Energy and food
+In which two units is the energy value of food measured? | Calories or joules | Litres or millilitres | Metres or centimetres | Grams or kilograms
+Which nutrient is the most concentrated source of energy? | Fats | Proteins | Carbohydrates | Vitamins
+According to the table, which food has the highest energy value? | Pad Thai (1 plate) | Fish and chips (1 plate) | Fried rice with egg (1 plate) | Banana (1 medium size)
+Which person needs the most energy each day? | A 17-year-old active male | A 12-year-old male with moderate activity | A 60-year-old male with moderate activity | A 17-year-old active female
+What happens if we take in more energy than our body needs? | The extra energy is converted into fats and we gain weight | We lose weight | The body uses its stored fats | Digestion stops
+# Food-based dietary guidelines
+Who designed Thailand's food-based dietary guidelines in 1998? | The Ministry of Public Health and some universities | The Ministry of Education | The Ministry of Agriculture | Doctors from other countries
+What are the two aspects of the food-based dietary guidelines? | Qualitative and quantitative | Simple and complex | Active and moderate | Digestive and nutritive
+How many qualitative guidelines are there for Thais aged 6 and above? | 9 | 5 | 6 | 12
+According to the Nutrition Flag, which food group should be eaten the most? | Rice-starchy food | Meat | Milk | Oil, sugar and salt
+How many glasses of milk does the Nutrition Flag suggest each day? | 1-2 | 3-5 | 4-6 | 8-12
+# Body mass index (BMI)
+Which formula is used to calculate BMI? | Mass (kg) ÷ (Height (m) × Height (m)) | Height (m) ÷ Mass (kg) | Mass (kg) × Height (m) | Mass (kg) + Height (m)
+A child has a mass of 36 kg and a height of 1.5 m. What is the BMI? | 16 | 24 | 12 | 54
+# Digestive system
+What does the digestive system do? | Breaks food down into simpler substances the body can absorb | Pumps blood around the body | Filters the air we breathe | Sends messages to the brain
+What does saliva contain that digests starch into sugar? | An enzyme | Bile | Acid | Fiber
+Why does the stomach produce an acidic juice? | To kill the bacteria in the food | To make bile | To absorb water | To store food waste
+Which organ produces bile for the emulsification of fats? | Liver | Stomach | Pancreas | Large intestine
+Where are digested nutrients absorbed into the bloodstream? | Small intestine | Stomach | Large intestine | Mouth
+What is absorbed into the body at the large intestine? | Excess water | Bile | Enzymes | Saliva
+Which is the correct path of food through the digestive system? | Mouth, esophagus, stomach, small intestine, large intestine, rectum, anus | Mouth, stomach, esophagus, small intestine, large intestine, rectum, anus | Mouth, esophagus, small intestine, stomach, large intestine, rectum, anus | Mouth, esophagus, stomach, large intestine, small intestine, rectum, anus
+# Caring for the digestive system
+Which is a good way to take care of our digestive system? | Drink more plain water | Rush our food | Skip meals and eat at any time | Eat plenty of sweet and salty foods
+`;
+
 const SETS = [
-  {id:'factors',    name:'Factors & Multiples', icon:'🔢', color:'#6366f1', text:MATH_FACTORS},
-  {id:'fractions',  name:'Fractions',            icon:'➗', color:'#ec4899', text:MATH_FRACTIONS},
-  {id:'decimals',   name:'Decimals',             icon:'🔟', color:'#14b8a6', text:MATH_DECIMALS},
-  {id:'percentage', name:'Percentage',           icon:'💯', color:'#f97316', text:MATH_PERCENTAGE},
-  {id:'ratio',      name:'Ratio & Proportion',   icon:'⚖️', color:'#8b5cf6', text:MATH_RATIO},
-  {id:'wind',       name:'Wind & Monsoon',       icon:'🌬️', color:'#0ea5e9', text:WIND},
-  {id:'separate',   name:'Separation Techniques',icon:'🧪', color:'#22c55e', text:SEPARATION},
-  {id:'rocks',      name:'Rocks',                icon:'🪨', color:'#a16207', text:ROCKS},
-  {id:'faces',      name:'Guess Who? Class Portraits', icon:'🎨', color:'#e11d48',
+  {id:'factors',    name:'Factors & Multiples', icon:'🔢', color:'#6366f1', subject:'math',    text:MATH_FACTORS},
+  {id:'fractions',  name:'Fractions',            icon:'➗', color:'#ec4899', subject:'math',    text:MATH_FRACTIONS},
+  {id:'decimals',   name:'Decimals',             icon:'🔟', color:'#14b8a6', subject:'math',    text:MATH_DECIMALS},
+  {id:'percentage', name:'Percentage',           icon:'💯', color:'#f97316', subject:'math',    text:MATH_PERCENTAGE},
+  {id:'ratio',      name:'Ratio & Proportion',   icon:'⚖️', color:'#8b5cf6', subject:'math',    text:MATH_RATIO},
+  {id:'wind',       name:'Wind & Monsoon',       icon:'🌬️', color:'#0ea5e9', subject:'science', text:WIND},
+  {id:'separate',   name:'Separation Techniques',icon:'🧪', color:'#22c55e', subject:'science', text:SEPARATION},
+  {id:'rocks',      name:'Rocks',                icon:'⛰️', color:'#a16207', subject:'science', text:ROCKS},
+  {id:'nutrition',  name:'Nutrition & Digestion',icon:'🍎', color:'#65a30d', subject:'science', text:NUTRITION},
+  {id:'faces',      name:'Guess Who? Class Portraits', icon:'🎨', color:'#e11d48', subject:'extra',
     list: window.FACES.map(f => ({ q:'Who is this?', correct:f.name, wrong:window.FACES.filter(x => x.name !== f.name).map(x => x.name), img:f.src }))}
+];
+const SUBJECTS = [
+  {id:'science', name:'Science'},
+  {id:'math',    name:'Math'},
+  {id:'extra',   name:'Extra'}
 ];
 
 /* ================= parsing ================= */
@@ -954,14 +1001,20 @@ function setBestLocal(setId, val){ const s = store.get() || {}; s.best = s.best 
 
 function buildSetList(){
   const box = $('setlist'); box.innerHTML = '';
-  SETS.forEach(set => {
-    const row = document.createElement('div'); row.className = 'setcard';
-    const best = bestLocal(set.id);
-    row.innerHTML = `<div class="swatch" style="background:${set.color}">${set.icon}</div>
-      <div class="meta"><b>${set.name}</b><span>${set.list.length} questions${best?' · best '+best:''}</span></div>`;
-    const btn = document.createElement('button'); btn.className = 'btn gold'; btn.textContent = 'Play'; btn.type = 'button';
-    btn.addEventListener('click', () => startRun(set));
-    row.appendChild(btn); box.appendChild(row);
+  SUBJECTS.forEach(subj => {
+    const sets = SETS.filter(s => s.subject === subj.id);
+    if(!sets.length) return;
+    const heading = document.createElement('div'); heading.className = 'subjhead'; heading.textContent = subj.name;
+    box.appendChild(heading);
+    sets.forEach(set => {
+      const row = document.createElement('div'); row.className = 'setcard';
+      const best = bestLocal(set.id);
+      row.innerHTML = `<div class="swatch" style="background:${set.color}">${set.icon}</div>
+        <div class="meta"><b>${set.name}</b><span>${set.list.length} questions${best?' · best '+best:''}</span></div>`;
+      const btn = document.createElement('button'); btn.className = 'btn gold'; btn.textContent = 'Play'; btn.type = 'button';
+      btn.addEventListener('click', () => startRun(set));
+      row.appendChild(btn); box.appendChild(row);
+    });
   });
   updateNetStatus($('netstatus'));
 }
@@ -1207,7 +1260,6 @@ function openBoards(){
 }
 
 /* ================= events ================= */
-$('saveName').addEventListener('click', saveNickname);
 $('nickname').addEventListener('blur', saveNickname);
 $('nickname').addEventListener('keydown', e => { if(e.key==='Enter'){ saveNickname(); e.target.blur(); } });
 $('quitBtn').addEventListener('click', () => { token++; cancelAnimationFrame(rafId); state='home'; showView('home'); buildSetList(); });
