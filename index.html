@@ -63,6 +63,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manip
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 input[type=text]{width:100%;border:2px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--field);color:var(--ink)}
 input:focus{outline:3px solid var(--gold);outline-offset:1px}
+select{width:100%;border:2px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--field);color:var(--ink)}
 label{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color:var(--muted)}
 
 /* ---------- home / set picker ---------- */
@@ -238,7 +239,20 @@ window.FACES=[{"name":"Ai","src":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQA
     <p class="sub">Answer fast for more points. Keep a streak going to unlock bonus eggs!</p>
     <div class="setlist" id="setlist"></div>
     <div class="netstatus" id="netstatus"></div>
+    <button class="btn ghost" id="viewBoards" type="button" style="margin-top:12px">🏆 View leaderboards</button>
   </div>
+</section>
+
+<!-- ============ LEADERBOARDS ============ -->
+<section id="boards" class="hidden">
+  <div class="card">
+    <div class="lbheader"><h2>Leaderboards</h2><button class="chip" id="bdRefresh" type="button" aria-label="Refresh leaderboard">↻</button></div>
+    <label for="boardTopic">Topic</label>
+    <select id="boardTopic"></select>
+    <div class="lblist" id="bdlist" style="margin-top:12px"></div>
+    <div class="netstatus" id="bdstatus"></div>
+  </div>
+  <div class="actionsrow"><button class="btn gold" id="bdBack" type="button">Back</button></div>
 </section>
 
 <!-- ============ GAME ============ -->
@@ -963,6 +977,7 @@ function showView(v){
   $('home').classList.toggle('hidden', v!=='home');
   $('game').classList.toggle('hidden', v!=='game');
   $('results').classList.toggle('hidden', v!=='results');
+  $('boards').classList.toggle('hidden', v!=='boards');
 }
 function startRun(set){
   if(!nickname){ $('nickname').focus(); $('nickname').scrollIntoView({behavior:'smooth', block:'center'}); return; }
@@ -1156,14 +1171,13 @@ async function submitScore(){
     });
   }catch(e){ console.error('submitScore failed', e); }
 }
-async function loadLeaderboard(){
-  const list = $('lblist'), status = $('lbstatus');
-  list.innerHTML = ''; status.textContent = '';
+async function renderBoard(setId, list, status, mine){
+  list.innerHTML = ''; status.textContent = ''; status.classList.remove('off');
   if(!dbReady || !db){ status.textContent = 'Leaderboard unavailable right now.'; status.classList.add('off'); return; }
   status.textContent = 'Loading…';
   try{
     /* No orderBy here on purpose: filtering + sorting in Firestore needs a custom index. We fetch this topic's scores and sort them below instead. */
-    const q = fs.query(fs.collection(db,'scores'), fs.where('setId','==',curSet.id), fs.limit(500));
+    const q = fs.query(fs.collection(db,'scores'), fs.where('setId','==',setId), fs.limit(500));
     const snap = await fs.getDocs(q);
     status.textContent = '';
     if(snap.empty){ list.innerHTML = '<div class="lbmsg">No scores yet for this topic — you could be first!</div>'; return; }
@@ -1172,7 +1186,7 @@ async function loadLeaderboard(){
     rows.sort((a,b) => (b.score||0) - (a.score||0));
     rows.slice(0,20).forEach(d => {
       rank++;
-      const row = document.createElement('div'); row.className = 'lbrow' + (d.name===nickname && d.score===score ? ' me' : '');
+      const row = document.createElement('div'); row.className = 'lbrow' + (mine && d.name===nickname && d.score===score ? ' me' : '');
       row.innerHTML = `<span class="pos">${rank<=3 ? ['🥇','🥈','🥉'][rank-1] : rank}</span><span class="nm"></span><span class="sc"></span>`;
       row.querySelector('.nm').textContent = d.name || 'Anonymous';
       row.querySelector('.sc').textContent = d.score;
@@ -1184,6 +1198,13 @@ async function loadLeaderboard(){
     status.textContent = 'Could not load the leaderboard (' + code + ').' + (code==='unavailable' ? ' Check your connection.' : ''); status.classList.add('off');
   }
 }
+function loadLeaderboard(){ return renderBoard(curSet.id, $('lblist'), $('lbstatus'), true); }
+function loadBoardView(){ return renderBoard($('boardTopic').value, $('bdlist'), $('bdstatus'), false); }
+function openBoards(){
+  const sel = $('boardTopic');
+  if(!sel.options.length){ SETS.forEach(st => { const o = document.createElement('option'); o.value = st.id; o.textContent = st.icon + ' ' + st.name; sel.appendChild(o); }); }
+  showView('boards'); loadBoardView();
+}
 
 /* ================= events ================= */
 $('saveName').addEventListener('click', saveNickname);
@@ -1193,6 +1214,10 @@ $('quitBtn').addEventListener('click', () => { token++; cancelAnimationFrame(raf
 $('playAgain').addEventListener('click', () => startRun(curSet));
 $('backHome').addEventListener('click', () => { showView('home'); buildSetList(); });
 $('lbRefresh').addEventListener('click', loadLeaderboard);
+$('viewBoards').addEventListener('click', openBoards);
+$('boardTopic').addEventListener('change', loadBoardView);
+$('bdRefresh').addEventListener('click', loadBoardView);
+$('bdBack').addEventListener('click', () => { showView('home'); buildSetList(); });
 $('muteBtn').addEventListener('click', () => { muted=!muted; setMuteLabel(); const s=store.get()||{}; s.muted=muted; store.set(s); if(!muted){ ac(); sfx.beep(); } });
 $('fsBtn').addEventListener('click', () => { try{ if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(()=>{}); }catch(e){} });
 addEventListener('online', () => updateNetStatus($('netstatus')));
