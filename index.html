@@ -9,8 +9,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Exam Practice">
 <title>P6 Term 1 Exam Practice by T.Jonny</title>
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -61,7 +59,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manip
 .btn{border:0;border-radius:14px;padding:13px 18px;font-weight:600;font-size:17px;background:#e7e4fb;color:#1b1740;box-shadow:0 4px 0 rgba(0,0,0,.25);width:100%;transition:transform .08s}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
 .btn.gold{background:var(--gold);color:#3b2400;font-size:18px}
-.btn.ghost{background:var(--field);box-shadow:none;border:2px solid var(--line)}
+.btn.ghost{background:var(--field);box-shadow:none;border:2px solid var(--line);color:var(--ink)}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 input[type=text]{width:100%;border:2px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--field);color:var(--ink)}
 input:focus{outline:3px solid var(--gold);outline-offset:1px}
@@ -161,6 +159,16 @@ h2{margin:0 0 4px;font-size:19px}
 .lbmsg{color:var(--muted);font-size:14px;text-align:center;padding:14px 0}
 .actionsrow{display:grid;gap:8px;margin-top:10px}
 
+/* ---------- exam info button & view ---------- */
+.examBtnRow{display:flex;justify-content:center;margin-bottom:10px}
+.btn.small{width:auto;padding:8px 14px;font-size:12.5px;font-weight:600;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.examlist{display:grid;gap:10px}
+.examcard{background:var(--field);border:2px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
+.examcard .swatch{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;color:#fff}
+.examcard .meta{flex:1;min-width:0}
+.examcard .meta b{display:block;font-size:16px;margin-bottom:4px}
+.examcard .meta ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--muted);line-height:1.55}
+
 canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
 @media (prefers-reduced-motion: reduce){.cdnum.pop,.boostreveal.show,.egg.shake,.pop{animation:none!important}}
 
@@ -227,6 +235,8 @@ window.FACES=[{"name":"Ai","src":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQA
   </div>
 </header>
 
+<div class="examBtnRow"><button class="btn ghost small" id="examInfoBtn" type="button">📋 What's in my Term 1 exams?</button></div>
+
 <!-- ============ HOME ============ -->
 <section id="home">
   <div class="card">
@@ -256,6 +266,16 @@ window.FACES=[{"name":"Ai","src":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQA
     <div class="netstatus" id="bdstatus"></div>
   </div>
   <div class="actionsrow"><button class="btn gold" id="bdBack" type="button">Back</button></div>
+</section>
+
+<!-- ============ EXAM INFO ============ -->
+<section id="examinfo" class="hidden">
+  <div class="card">
+    <h2>📋 What's in my Term 1 exams?</h2>
+    <p class="sub">Here's what each subject covers this term.</p>
+    <div class="examlist" id="examlist"></div>
+  </div>
+  <div class="actionsrow"><button class="btn gold" id="examBack" type="button">Back</button></div>
 </section>
 
 <!-- ============ GAME ============ -->
@@ -900,6 +920,136 @@ Which is the correct path of food through the digestive system? | Mouth, esophag
 Which is a good way to take care of our digestive system? | Drink more plain water | Rush our food | Skip meals and eat at any time | Eat plenty of sweet and salty foods
 `;
 
+const ENGLISH = `
+# Unit 1 - Vocabulary and future forms
+Not for everyone to use - what word is this? | Private | Public | Shared | Free
+A motor vehicle with two wheels that one or two people can ride on is called a... | Motorbike | Bicycle | Car | Van
+Which word means "to stay with someone and make sure they are safe"? | Look after | Look forward to | Look out | Look up
+A long, flat boat used in the past to carry things along canals and rivers is called a... | Barge | Yacht | Canoe | Ferry
+A boat with a sail, often used for racing, is called a... | Yacht | Barge | Canoe | Motorbike
+Which word means "to feel excited about something that is going to happen"? | Look forward to | Look after | Forget about | Give up
+We usually use "going to" for... | plans and intentions decided before speaking | quick decisions made at the moment of speaking | facts that are always true | things happening right now
+We usually use "will" for... | quick decisions made at the moment of speaking | fixed arrangements written in a diary | plans made a long time ago | daily habits
+# Unit 2 - First conditional and vocabulary
+Which sport involves exploring underground passages and caves? | Caving | Snorkelling | Rock climbing | Mountain biking
+What is the opposite of "honest"? | Dishonest | Truthful | Polite | Careful
+What is the opposite of "obey"? | Disobey | Agree | Listen | Follow
+Complete: "If you did more exercise, you ___ healthier." | 'd be | will be | would being | are
+First conditional sentences are used to describe... | real or likely possibilities in the future | things that are impossible | things that happened in the past | permanent facts about the world
+# Unit 3 - Present perfect and vocabulary
+Which word describes food that tastes very good? | Delicious | Deserted | Furious | Adventurous
+Which word means "empty, with no one there"? | Deserted | Famous | Bright | Delicious
+We use the present perfect with "just" to talk about... | something that happened a very short time ago | something that will happen soon | a daily habit | a fixed time in the past
+Complete: "I've already ___ my homework." | finished | finish | finishing | finishes
+Which word do we usually use in questions and negatives to ask if something has happened "up to now"? | Yet | Since | Just | Already
+# Unit 4 - Present perfect continuous and vocabulary
+We use the present perfect continuous with "for" to talk about... | a period of time | the exact point when something started | the future | a completed single action
+We use the present perfect continuous with "since" to talk about... | the point in time when something started | how long something lasted | how many times something happened | the future
+Complete: "She has been reading ___ two hours." | for | since | ago | at
+Complete: "He has been working here ___ 2020." | since | for | during | ago
+A very big, round, light object full of hot gas that carries people through the air is a... | Hot-air balloon | Yacht | Barge | Motorbike
+# Unit 5 - Passive voice and vocabulary
+Which sentence is written in the passive voice? | Ice cream was invented by the Chinese. | The Chinese invented ice cream. | The Chinese are inventing ice cream. | The Chinese will invent ice cream.
+In the sentence "Omelettes are made with eggs," which form is used? | Present passive | Past passive | Present continuous | Future passive
+A test carried out, usually in science, to find something out is called an... | Experiment | Achievement | Equipment | Argument
+Something great that you have done successfully is called an... | Achievement | Experiment | Invention | Equipment
+# Unit 6 - Future passive and vocabulary
+"To look at lots of different websites on the Internet" means to... | Surf | Download | Attach | Log off
+"To stop using a website or writing an email but leave the computer switched on" means to... | Log off | Download | Surf | Attach
+Complete with the future passive: "Tomorrow, you ___ to the art gallery." | will be driven | will drive | are driving | drove
+The future passive is formed with... | will be + past participle | will + base verb | am/is/are + past participle | was/were + past participle
+# Extra revision - vocabulary
+A large painting made directly on a wall, often in a public place, is called a... | Mural | Portrait | Landscape | Sculpture
+Someone who never talks to anyone and avoids other people could be described as... | Unfriendly | Immature | Untidy | Impossible
+Which of these belongs in the same group as "aeroplane" and "helicopter"? | Hot-air balloon | Bike | Truck | Ship
+Which word means "someone you admire and want to be like"? | Look up to | Look round | Look into | Look after
+Complete: "We are doing an ___ in science to test if plants need water." | experiment | invention | equipment | discovery
+This fountain pen has a replaceable ___ for when the ink runs out. | cartridge | hollow | machine | device
+Which word describes "words that are spelled the same but have different meanings"? | Homonyms | Phrasal verbs | Prefixes | Suffixes
+# Extra revision - conditionals
+Which conditional is used to talk about things that are likely to happen in the future? | First conditional | Zero conditional | Second conditional | Third conditional
+Which conditional is used to talk about unlikely or unreal situations? | Second conditional | Zero conditional | First conditional | Third conditional
+Complete the second conditional: "If she ___ fly, she ___ to the moon." | could / would fly | could / would flew | would fly / would fly | would fly / will fly
+Complete the first conditional: "If the weather ___ good, we'll go to the beach." | is | was | be | will be
+# Extra revision - tenses and voice
+Complete: "I ___ to America before. I ___ to Washington DC last year." | have been / went | went / have been | have gone / been | have been / have gone
+Which sentence uses the present perfect continuous tense correctly? | The festival has been on for seven days. | The festival is on for seven days. | The festival was on for seven days. | The festival will be on for seven days.
+Which sentence is written in the passive voice? | The internet was invented by Sir Tim Berners-Lee. | People play football all around the world. | NASA will send astronauts to the moon. | Tom has already eaten his lunch.
+How would you change "People play football all around the world" into the passive voice? | Football is played all around the world. | Football plays people all around the world. | Football was played by people. | People are played by football.
+`;
+
+const ENGLISHCOMM = `
+# Everyday conversation
+Teacher: "How's it going?" What is the best reply? | Pretty good, thanks! How about you? | Yes, it's going. | I am here in the room. | Going where?
+Friend: "What are you up to this weekend?" What is the best reply? | I'm planning to visit my grandparents on Sunday. | It's on Saturday and Sunday. | I'm well, thanks. | Weekends are two days.
+Someone says "Thanks so much for your help!" What is the polite reply? | You're welcome! | Help is helping. | Excuse me. | I helped you too.
+"What does your mum do for work?" What is the best answer? | She's a teacher. | She likes cooking. | Thanks a lot. | She is washing dishes now.
+Someone asks about your taste in music. Which is the best answer? | I really enjoy pop and hip-hop, but I also like some classical music. | Music is nice and I like nice music. | I'm going to a concert. | I'm very kind, thanks.
+Your friend says "I've got a stomachache." What is a caring response? | Oh no, that's not nice. You should rest. | You're welcome! | I'll lend you my pencil. | Have a late night then.
+Someone asks "Do you have the time, please?" What is a natural reply? | Sure, it's quarter to eight. | Yes, it's zero thirty. | Time is a concept. | Sure, the number is 7:45.
+# Polite requests
+Which is the most polite way to ask to borrow something? | Could I please borrow your pen? | Give me your pen. | I want your pen. | Pen, now.
+You need to ask a stranger for directions. What should you say first? | Excuse me, could you help me? | Oi you! | Hey! | (Just start asking without saying anything)
+# Idioms and expressions
+Your teacher says the exam is "a piece of cake." What does this mean? | The exam is very easy | The exam is very delicious | The exam is cancelled | It's your birthday
+Your friend says she has "run out of" paper. What does she mean? | There is no paper left | She ran on some paper | She ran out of the room | She has lost her paper
+Your teacher says "Hold your horses!" What does this mean? | Wait and be patient | Good luck | It's raining hard | Pick up a horse and hold it
+You can sense that something isn't quite right. Which phrase has the same meaning? | I smell a rat | I smell a cat | I smell a rabbit | I smell a mouse
+# Directions and maps
+Imagine a town map where the police station is next to the community centre, and you are starting at the sports centre. Which instruction would help you get there? | Walk back up the road and turn at the community centre | Walk to the river and cross the bridge | Go into the cinema first | Head to the green park
+Imagine the post office is next to the supermarket, and the bank is on the other side of the supermarket. How would you get from the post office to the bank? | Walk past the supermarket next door | Cross the river and turn left | Take the bus to the cinema first | Go through the park
+# Speaking about yourself
+What's the best way to answer "What job do you want when you grow up?" | I want to be a vet because I love animals. | I don't know jobs. | Grow up is far away. | Jobs are for adults only.
+Which phrase best introduces a personal achievement? | I felt really proud when I won my swimming competition. | Something happened once. | Achievements are for winners. | I cannot remember achievements.
+When talking about your favourite food, a strong exam answer would... | name the food and give at least one reason you like it | just name the food with no reason | describe someone else's food | avoid answering the question
+If you could travel anywhere in the world, a strong answer would... | name a place and explain why you'd like to go there | just say "somewhere nice" | refuse to choose a place | list every country in the world
+`;
+
+const HEALTH = `
+# Unit 1 - Our body
+What is the male sex cell called? | Sperm | Ovum | Egg | Zygote
+What happens during fertilization? | A sperm fuses with an ovum | A baby is born | The heart pumps blood | Air enters the lungs
+Which statement about the reproductive system is true? | The male sex cell is called sperm | Males get pregnant after fertilization | The male and female reproductive systems are the same | Fertilization happens in the heart
+What is the main organ of the circulatory system? | The heart | The lungs | The stomach | The brain
+What are the main organs of the respiratory system? | The lungs | The heart | The kidneys | The liver
+Which of these helps keep the reproductive system healthy? | Washing regularly and wearing clean underwear | Skipping meals | Never exercising | Ignoring infections
+Which of these helps keep the circulatory system healthy? | Regular exercise and a healthy diet | Smoking | Eating lots of salty food | Staying inactive
+Which of these helps keep the respiratory system healthy? | Avoiding smoke and polluted air | Smoking cigarettes | Holding your breath often | Staying in a dusty room
+# Unit 2 - Relationships
+Which of these is a positive way to build relationships with people you don't know? | Giving up your seat on the bus for a pregnant woman | Pushing in at the front of a queue | Refusing to apologize when you bump into someone | Ignoring people who need help
+Which of these is also a positive way to build relationships with strangers? | Always being polite to everyone you meet | Pushing in at the front of a queue | Ignoring people who need help | Refusing to apologize when you bump into someone
+Working well in a team usually involves... | sharing a common goal and cooperating with others | working alone and ignoring others | competing against your teammates | refusing to listen to others' ideas
+Which is a good way to build or maintain a relationship with your family? | Spending time together and communicating openly | Avoiding them as much as possible | Never sharing your feelings | Ignoring their advice
+# Unit 3 - Risky behaviours
+What best describes "risky behaviours"? | Actions that could cause harm to yourself or others | Actions that always keep you safe | Hobbies like sports | Actions your parents always approve of
+What does HIV stand for? | Human Immunodeficiency Virus | Human Infectious Virus Illness | Highly Infectious Viral Infection | Human Immune Virus Illness
+Can HIV be transmitted by shaking hands with an infected person? | No, it cannot | Yes, always | Only sometimes | Only if you have long nails
+Which of these is a risky activity that might lead to early sexual activity? | Spending time alone with the opposite sex in a private place | Playing football with friends | Refusing drinks from strangers | Keeping a safe distance from the opposite sex
+Which of these is also considered risky behaviour? | Watching pornographic material | Doing homework | Playing football at the park | Going to school
+What is a possible risk of early or premarital sexual activity? | Unplanned pregnancy | Improved fitness | Better grades | More friendships
+# Extra revision - body systems
+What would most likely happen if human reproductive systems stopped working altogether? | Humans would eventually die out | Humans would stop breathing | Humans would stop growing | Humans would no longer need food
+Which statement about reproduction is incorrect? | Males experience menstruation | The testes are part of the male reproductive system | The penis is part of the male reproductive system | Ova are released by the ovaries
+Which blood vessel carries oxygen-rich blood away from the heart? | Artery | Vein | Trachea | Esophagus
+Which of these is NOT actually found in human blood? | Blue blood cells | Plasma | Red blood cells | White blood cells
+In diagrams of the circulatory system, veins are usually coloured... | Blue | Red | Yellow | Green
+Which of these is NOT a good way to protect your respiratory system? | Staying close to someone who has a contagious illness | Wearing a mask in polluted areas | Avoiding cigarette smoke | Staying away from heavy traffic fumes
+Which physical change during puberty happens to both boys and girls? | Growth of hair in the armpits | The start of menstruation | Production of ova by the ovaries | Growing a beard
+Which system allows humans to produce offspring? | The reproductive system | The respiratory system | The circulatory system | The digestive system
+Which system delivers nutrients, oxygen and water to the body's cells and removes waste? | The circulatory system | The respiratory system | The reproductive system | The digestive system
+# Extra revision - relationships and teamwork
+If a family member is unwell, what should you do? | Look after them and help them rest | Ignore them | Annoy them | Play pranks on them
+Doing the dishes, making your bed and tidying your room are all examples of... | household chores | risky behaviours | homework | teamwork
+Working together with others to reach a shared goal is called... | Teamwork | Homework | Individual work | Single work
+Which of these actions helps build good relationships with others? | Giving up your seat for someone who needs it more | Laughing at people who lose | Selling expired food to customers | Getting angry and hitting a stranger
+# Extra revision - risky behaviours
+What does AIDS stand for? | Acquired Immune Deficiency Syndrome | Human Immunodeficiency Virus | Auto Immune Disease Syndrome | Acute Infectious Disease Syndrome
+Which of these could put someone at risk of catching HIV? | Unprotected sex | Shaking hands | Dancing | Talking to someone
+Which of these is NOT a sexually transmitted disease? | A broken leg | Gonorrhoea | Chlamydia | Hepatitis
+Which of these could be a factor leading to early sexual activity? | Meeting strangers online | Doing homework with a parent | Playing family board games | Talking to your parents about your problems
+Which of these behaviours is NOT risky? | Going to the cinema with a group of friends | Drinking alcohol | Looking at pornographic material | Hugging someone who doesn't want to be hugged
+`;
+
 const SETS = [
   {id:'factors',    name:'Factors & Multiples', icon:'🔢', color:'#6366f1', subject:'math',    text:MATH_FACTORS},
   {id:'fractions',  name:'Fractions',            icon:'➗', color:'#ec4899', subject:'math',    text:MATH_FRACTIONS},
@@ -910,13 +1060,27 @@ const SETS = [
   {id:'separate',   name:'Separation Techniques',icon:'🧪', color:'#22c55e', subject:'science', text:SEPARATION},
   {id:'rocks',      name:'Rocks',                icon:'⛰️', color:'#a16207', subject:'science', text:ROCKS},
   {id:'nutrition',  name:'Nutrition & Digestion',icon:'🍎', color:'#65a30d', subject:'science', text:NUTRITION},
+  {id:'english',    name:'Units 1-6 Revision',   icon:'📖', color:'#3b82f6', subject:'english', text:ENGLISH},
+  {id:'engcomm',    name:'Conversation & Idioms',icon:'💬', color:'#06b6d4', subject:'engcomm', text:ENGLISHCOMM},
+  {id:'health',     name:'Body, Relationships & Risks', icon:'❤️', color:'#f43f5e', subject:'health', text:HEALTH},
   {id:'faces',      name:'Guess Who? Class Portraits', icon:'🎨', color:'#e11d48', subject:'extra',
     list: window.FACES.map(f => ({ q:'Who is this?', correct:f.name, wrong:window.FACES.filter(x => x.name !== f.name).map(x => x.name), img:f.src }))}
 ];
 const SUBJECTS = [
   {id:'science', name:'Science'},
   {id:'math',    name:'Math'},
+  {id:'english', name:'English'},
+  {id:'engcomm', name:'English Communication'},
+  {id:'health',  name:'Health'},
   {id:'extra',   name:'Extra'}
+];
+
+const EXAM_INFO = [
+  {subject:'English',                icon:'📖', color:'#0ea5e9', items:['Oxford Family and Friends — Chapters 1–6']},
+  {subject:'English Communication',  icon:'🗣️', color:'#06b6d4', items:['ONET-style questions']},
+  {subject:'Maths',                  icon:'🔢', color:'#6366f1', items:['U1 Factors','U2 Fractions','U3 Decimals','U4 Percentage','U5 Ratio']},
+  {subject:'Science',                icon:'🔬', color:'#22c55e', items:['U1 Food and Nutrition','U2 Separation Techniques','U6 Rocks','U7 Wind and Monsoons']},
+  {subject:'Health',                 icon:'❤️', color:'#f43f5e', items:['U1 My Body','U2 Relationships','U3 Risky Behaviours']}
 ];
 
 /* ================= parsing ================= */
@@ -941,7 +1105,7 @@ const BASE_MAX = 1000, BASE_MIN = 100;
 let nickname = '', muted = false;
 let curSet = null, deck = [], qi = 0, cur = null, order = [];
 let score = 0, streak = 0, bestStreakRun = 0, correctCount = 0, lastEggAt = 0;
-let boostMult = {left:0, factor:1}, boostTime = {left:0, add:0};
+let boostMult = {left:0, factor:1};
 let state = 'home', t0 = 0, rafId = 0, lastSec = -1, token = 0;
 
 function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
@@ -1026,6 +1190,19 @@ function updateNetStatus(el){
   el.textContent = navigator.onLine === false ? 'You look offline — you can still play, scores sync when you reconnect.' : '';
   el.classList.toggle('off', navigator.onLine === false);
 }
+function buildExamInfo(){
+  const box = $('examlist');
+  if(box.dataset.built) return;
+  box.innerHTML = '';
+  EXAM_INFO.forEach(s => {
+    const row = document.createElement('div'); row.className = 'examcard';
+    const items = s.items.map(i => `<li>${i}</li>`).join('');
+    row.innerHTML = `<div class="swatch" style="background:${s.color}">${s.icon}</div>
+      <div class="meta"><b>${s.subject}</b><ul>${items}</ul></div>`;
+    box.appendChild(row);
+  });
+  box.dataset.built = '1';
+}
 
 /* ================= run flow ================= */
 function showView(v){
@@ -1033,6 +1210,7 @@ function showView(v){
   $('game').classList.toggle('hidden', v!=='game');
   $('results').classList.toggle('hidden', v!=='results');
   $('boards').classList.toggle('hidden', v!=='boards');
+  $('examinfo').classList.toggle('hidden', v!=='examinfo');
 }
 function startRun(set){
   if(!nickname){ $('nickname').focus(); $('nickname').scrollIntoView({behavior:'smooth', block:'center'}); return; }
@@ -1040,7 +1218,7 @@ function startRun(set){
   token++; const my = token; cancelAnimationFrame(rafId);
   curSet = set; deck = shuffle(set.list).slice(0, Math.min(RUN_LEN, set.list.length)); qi = 0;
   score = 0; streak = 0; bestStreakRun = 0; correctCount = 0; lastEggAt = 0;
-  boostMult = {left:0, factor:1}; boostTime = {left:0, add:0};
+  boostMult = {left:0, factor:1};
   buildProgress(); renderScore(); renderStreak(); $('qimg').classList.add('hidden');
   $('eggwrap').classList.add('hidden'); $('answers').classList.remove('hidden'); $('qtext').closest('.qcard') && ($('qtext').parentElement.classList.remove('hidden'));
   showView('game'); ac();
@@ -1091,7 +1269,7 @@ function nextQuestion(){
   });
   startTimer();
 }
-function effectiveTime(){ return TIME_MS + (boostTime.left>0 ? boostTime.add : 0); }
+function effectiveTime(){ return TIME_MS; }
 function startTimer(){
   cancelAnimationFrame(rafId); t0 = performance.now(); lastSec = -1;
   const ring = $('ringfg'), num = $('tnum'), box = $('timerbox'); const total = effectiveTime();
@@ -1142,10 +1320,9 @@ function answer(i){
     popText(chosen===null ? "Time's up" : 'Not quite', true);
   }
   if(boostMult.left>0) boostMult.left--;
-  if(boostTime.left>0) boostTime.left--;
   renderStreak();
 
-  const eggMilestone = streak>0 && streak%4===0 && streak>lastEggAt;
+  const eggMilestone = streak>0 && streak%2===0 && streak>lastEggAt;
   later(() => {
     if(eggMilestone){ lastEggAt = streak; showEgg(); }
     else nextQuestion();
@@ -1154,9 +1331,11 @@ function answer(i){
 
 /* ---- bonus egg ---- */
 const BOOSTS = [
-  {type:'points', label:t=>'🎁 +'+t.value+' bonus points!', value:400},
+  {type:'points', label:t=>'🎁 +'+t.value+' bonus points!',       roll:()=>200+Math.floor(Math.random()*401)},   // 200–600
+  {type:'points', label:t=>'💰 JACKPOT! +'+t.value+' points!!',    roll:()=>1000+Math.floor(Math.random()*1001)}, // 1000–2000
   {type:'mult',   label:t=>'⚡ 2× points for the next 3 questions!', value:2, dur:3},
-  {type:'time',   label:t=>'⏱ +4 seconds for the next 3 questions!', value:4000, dur:3}
+  {type:'mult',   label:t=>'🔥 3× points for the next 2 questions!', value:3, dur:2},
+  {type:'mult',   label:t=>'🌟 5× points on your very next question!', value:5, dur:1}
 ];
 function showEgg(){
   state = 'egg';
@@ -1182,9 +1361,8 @@ function crackEgg(btn){
   btn.classList.add('shake'); sfx.crack();
   later(() => {
     const boost = BOOSTS[Math.floor(Math.random()*BOOSTS.length)];
-    if(boost.type==='points') score += boost.value, renderScore();
-    else if(boost.type==='mult') boostMult = {left:boost.dur, factor:boost.value};
-    else if(boost.type==='time') boostTime = {left:boost.dur, add:boost.value};
+    if(boost.type==='points'){ boost.value = boost.roll(); score += boost.value; renderScore(); }
+    else if(boost.type==='mult'){ boostMult = {left:boost.dur, factor:boost.value}; }
     const rv = $('boostreveal'); rv.textContent = boost.label(boost); rv.classList.add('show');
     sfx.boost(); burst(innerWidth/2, innerHeight*0.4, 40, {speed:9});
     $('eggContinueRow').classList.remove('hidden');
@@ -1272,6 +1450,8 @@ $('viewBoards').addEventListener('click', openBoards);
 $('boardTopic').addEventListener('change', loadBoardView);
 $('bdRefresh').addEventListener('click', loadBoardView);
 $('bdBack').addEventListener('click', () => { showView('home'); buildSetList(); });
+$('examInfoBtn').addEventListener('click', () => { buildExamInfo(); showView('examinfo'); });
+$('examBack').addEventListener('click', () => { showView('home'); buildSetList(); });
 $('muteBtn').addEventListener('click', () => { muted=!muted; setMuteLabel(); const s=store.get()||{}; s.muted=muted; store.set(s); if(!muted){ ac(); sfx.beep(); } });
 $('fsBtn').addEventListener('click', () => { try{ if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(()=>{}); }catch(e){} });
 addEventListener('online', () => updateNetStatus($('netstatus')));
